@@ -5,7 +5,9 @@
             <Aside></Aside>
             <el-container>
                 <el-header>Header</el-header>
-                <el-main>Main</el-main>
+                <el-main>
+                    <RouterView />
+                </el-main>
             </el-container>
         </el-container>
     </div>
@@ -16,7 +18,7 @@ import Aside from "../components/aside.vue";
 <style lang="less" scoped>
 .common-layout {
     height: 100%;
-    .el-container{
+    .el-container {
         height: 100%;
     }
 }
