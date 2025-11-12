@@ -1,6 +1,6 @@
 <template>
     <el-menu
-        :style="{ width: '230px' }"
+        :style="{ width: !isCollapse ? '230px' : '64px' }"
         active-text-color="#ffd04b"
         background-color="#545c64"
         class="aside-container"
@@ -8,20 +8,23 @@
         text-color="#fff"
         @open="handleOpen"
         @close="handleClose"
+        :collapse="isCollapse"
     >
         <!-- 标题 -->
-        <p class="logo-lg">DIDI陪诊</p>
+        <p class="logo-lg">{{ isCollapse ? "DIDI" : "DIDI陪诊" }}</p>
         <TreeMenu :menuData="menuData" :index="1" />
     </el-menu>
 </template>
 <script setup>
 import TreeMenu from "./treeMenu.vue";
 import { useRouter } from "vue-router";
-import { reactive } from "vue";
+import { reactive, computed } from "vue";
+import { useStore } from "vuex";
 
 const router = useRouter();
 const menuData = reactive(router.options.routes[0].children);
-
+const store = useStore();
+const isCollapse = computed(() => store.state.menu.isCollapse);
 const handleOpen = () => {};
 const handleClose = () => {};
 </script>

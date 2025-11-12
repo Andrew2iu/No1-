@@ -1,16 +1,19 @@
-import { createApp } from 'vue'
-import './style.css'
-import App from './App.vue'
-import router from './router'
+import { createApp } from "vue";
+import "./style.css";
+import App from "./App.vue";
+import router from "./router";
+import store from "./store";
 
 // 引入element-plus图标依赖
-import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 
-const app = createApp(App)
+const app = createApp(App);
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
-  app.component(key, component)
+    app.component(key, component);
 }
 
 // 路由挂载
-app.use(router)
-app.mount('#app')
+app.use(router);
+// store挂载
+app.use(store);
+app.mount("#app");
