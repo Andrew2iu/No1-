@@ -11,7 +11,12 @@
                     formType ? "返回登录" : "注册账号"
                 }}</el-link>
             </div>
-            <el-form :model="loginForm" style="max-width: 600px" :rules="rules">
+            <el-form
+                ref="loginFormRef"
+                :model="loginForm"
+                style="max-width: 600px"
+                :rules="rules"
+            >
                 <el-form-item prop="userName">
                     <el-input
                         v-model="loginForm.userName"
@@ -46,7 +51,7 @@
                     <el-button
                         type="primary"
                         :style="{ width: '100%' }"
-                        @click="submitForm"
+                        @click="submitForm(loginFormRef)"
                     >
                         {{ formType ? "注册账号" : "登录" }}
                     </el-button>
@@ -57,6 +62,9 @@
 </template>
 <script setup>
 import { ref, reactive } from "vue";
+import { getCode, userAuthentication, login } from "../../api/index";
+import { UserFilled, Lock } from "@element-plus/icons-vue";
+import { useRouter } from "vue-router";
 const imgUrl = new URL("../../../public/login-head.png", import.meta.url).href;
 
 // 表单数据
@@ -131,20 +139,61 @@ const countdownChange = () => {
             type: "warning",
         });
     }
-    setInterval(() => {
+    const time = setInterval(() => {
         if (countdown.time < 0) {
             countdown.time = 60;
             countdown.validText = "获取验证码";
             flag = false;
+            clearInterval(time);
         } else {
             countdown.time -= 1;
             countdown.validText = `剩余${countdown.time}s`;
         }
     }, 1000);
     flag = true;
+    getCode({ tel: loginForm.userName }).then(({ data }) => {
+        if (data.code === 10000) {
+            ElMessage.success("发送成功");
+        }
+    });
 };
+const router = useRouter();
+const loginFormRef = ref();
 // 表单提交
-const submitForm = () => {};
+const submitForm = async (formEl) => {
+    if (!formEl) return;
+    //手动触发校验
+    await formEl.validate((valid, fields) => {
+        if (valid) {
+            console.log(loginForm, "submit!");
+            // 注册页面
+            if (formType.value) {
+                userAuthentication(loginForm).then(({ data }) => {
+                    if (data.code === 10000) {
+                        ElMessage.success("注册成功,请登录");
+                        formType.value = 0;
+                    }
+                });
+            } else {
+                // 登录页面
+                login(loginForm).then(({ data }) => {
+                    if (data.code === 10000) {
+                        ElMessage.success("登录成功");
+                        // 将token 和 用户信息 缓存到浏览器
+                        localStorage.setItem("pz_token", data.data.token);
+                        localStorage.setItem(
+                            "pz_userInfo",
+                            JSON.stringify(data.data.userInfo)
+                        );
+                        router.push("/");
+                    }
+                });
+            }
+        } else {
+            console.log("error submit!", fields);
+        }
+    });
+};
 </script>
 <style lang="less" scoped>
 :deep(.el-card__header) {
