@@ -1,7 +1,11 @@
-const state = {
+const localData=localStorage.getItem('pz_v3pz')
+
+const state =localData ? localData.menu :{
     // 实现aside展开收回
     isCollapse: false,
     selectMenu: [],
+    routerList:[],
+    menuActive:'1-1'
 };
 const mutations = {
     // 实现aside展开收回
@@ -22,6 +26,29 @@ const mutations = {
        const index= state.selectMenu.findIndex(val=>val.name===payload.name)
         // 通过索引删除数组指定元素
        state.selectMenu.splice(index,1)
+    },
+    dynamicMenu(state, payload){
+        // 通过glob导入文件
+        const modules = import.meta.glob('../views/**/**/*.vue')
+        console.log(modules);
+        function routerSet(router){
+            router.forEach(route => {
+                //判断没有子菜单,拼接路由数据
+                if(!route.children){
+                    const url=`../views${route.meta.path}/index.vue`
+                    // 拿到获取的vue组件
+                    route.component= modules[url]
+                }else{
+                    routerSet(route.children)
+                }
+            });
+        }
+        routerSet(payload)
+        // 拿到完整的路由数据
+        state.routerList=payload;
+    },
+    updateMenuActive(state,payload){
+      state.menuActive=payload
     }
 };
 

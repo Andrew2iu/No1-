@@ -4,16 +4,24 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import PanelHead from "./components/panelHead.vue";
+
+//刷新后的动态路由添加
+const localData=localStorage.getItem('pz_v3pz')
+if(localData){
+   store.commit('dynamicMenu',JSON.parse(localData).menu.routerList)
+   store.state.menu.routerList.forEach(item=>{
+      router.addRoute('main',item)
+   })
+}
+
 // 路由守卫
 router.beforeEach((to,from)=>{
    const token= localStorage.getItem('pz_token')
    // 判断非登录页面token不存在
-   if(!token&&to.path!=='login'){
+   if(!token&&to.path!=='/login'){
       return '/login'
-   }else if(token&&to.path==='login'){
+   }else if(token&&to.path==='/login'){
       return '/'
-   }else{
-      return true
    }
 })
 

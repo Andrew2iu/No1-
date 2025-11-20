@@ -35,20 +35,16 @@
             </ul>
         </div>
         <div class="header-right">
-            <el-dropdown>
+            <el-dropdown @command="handleClick">
                 <div class="el-dropdown-link flex-box">
-                    <el-avatar
-                        src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
-                    />
-                    <p class="user-name">admin</p>
+                    <el-avatar :src="userInfo.avatar" />
+                    <p class="user-name">{{ userInfo.name }}</p>
                 </div>
                 <template #dropdown>
                     <el-dropdown-menu>
-                        <el-dropdown-item>Action 1</el-dropdown-item>
-                        <el-dropdown-item>Action 2</el-dropdown-item>
-                        <el-dropdown-item>Action 3</el-dropdown-item>
-                        <el-dropdown-item disabled>Action 4</el-dropdown-item>
-                        <el-dropdown-item divided>Action 5</el-dropdown-item>
+                        <el-dropdown-item command="cancel"
+                            >退出</el-dropdown-item
+                        >
                     </el-dropdown-menu>
                 </template>
             </el-dropdown>
@@ -65,7 +61,7 @@ const store = useStore();
 const route = useRoute();
 const router = useRouter();
 const selectMenu = computed(() => store.state.menu.selectMenu);
-
+const userInfo = JSON.parse(localStorage.getItem("pz_userInfo"));
 // 点击关闭Tab
 const closeTab = (item, index) => {
     store.commit("closeMenu", item);
@@ -89,6 +85,15 @@ const closeTab = (item, index) => {
         router.push({
             path: selectMenuData[index].path,
         });
+    }
+};
+const handleClick = (command) => {
+    if (command === "cancel") {
+        // 退出
+        localStorage.removeItem("pz_token");
+        localStorage.removeItem("pz_userInfo");
+        localStorage.removeItem("pz_v3pz");
+        window.location.href = window.location.origin;
     }
 };
 </script>

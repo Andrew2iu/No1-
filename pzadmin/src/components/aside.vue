@@ -4,11 +4,11 @@
         active-text-color="#ffd04b"
         background-color="#545c64"
         class="aside-container"
-        default-active="2"
         text-color="#fff"
         @open="handleOpen"
         @close="handleClose"
         :collapse="isCollapse"
+        :default-active="active"
     >
         <!-- 标题 -->
         <p class="logo-lg">{{ isCollapse ? "DIDI" : "DIDI陪诊" }}</p>
@@ -22,9 +22,10 @@ import { reactive, computed } from "vue";
 import { useStore } from "vuex";
 
 const router = useRouter();
-const menuData = reactive(router.options.routes[0].children);
 const store = useStore();
+const menuData = computed(() => store.state.menu.routerList);
 const isCollapse = computed(() => store.state.menu.isCollapse);
+const active = computed(() => store.state.menu.menuActive);
 const handleOpen = () => {};
 const handleClose = () => {};
 </script>

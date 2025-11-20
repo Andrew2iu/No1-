@@ -40,6 +40,7 @@ const router = useRouter();
 //点击菜单
 const handleClick = (item, active) => {
     store.commit("addMenu", item.meta);
+    store.commit("updateMenuActive", active);
     router.push(item.meta.path);
 };
 </script>

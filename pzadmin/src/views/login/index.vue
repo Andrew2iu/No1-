@@ -61,10 +61,16 @@
     </el-row>
 </template>
 <script setup>
-import { ref, reactive } from "vue";
-import { getCode, userAuthentication, login } from "../../api/index";
+import { ref, reactive, computed, toRaw } from "vue";
+import {
+    getCode,
+    userAuthentication,
+    login,
+    menuPermissions,
+} from "../../api/index";
 import { UserFilled, Lock } from "@element-plus/icons-vue";
 import { useRouter } from "vue-router";
+import { useStore } from "vuex";
 const imgUrl = new URL("../../../public/login-head.png", import.meta.url).href;
 
 // 表单数据
@@ -159,6 +165,10 @@ const countdownChange = () => {
 };
 const router = useRouter();
 const loginFormRef = ref();
+const store = useStore();
+
+const routerList = computed(() => store.state.menu.routerList);
+
 // 表单提交
 const submitForm = async (formEl) => {
     if (!formEl) return;
@@ -185,7 +195,14 @@ const submitForm = async (formEl) => {
                             "pz_userInfo",
                             JSON.stringify(data.data.userInfo)
                         );
-                        router.push("/");
+                        menuPermissions().then(({ data }) => {
+                            store.commit("dynamicMenu", data.data);
+                            console.log(routerList, "routerList");
+                            toRaw(routerList.value).forEach((item) => {
+                                router.addRoute("main", item);
+                            });
+                            router.push("/");
+                        });
                     }
                 });
             }
