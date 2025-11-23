@@ -8,7 +8,7 @@ import Order from "../views/vppz/order/index.vue";
 import Staff from "../views/vppz/staff/index.vue";
 import Dashboard from "../views/dashboard/index.vue";
 
-const localData=localStorage.getItem('pz_v3pz')
+
 
 
 const routes = [
@@ -17,6 +17,7 @@ const routes = [
         component: Layout,
         name: "main",
         redirect:to=>{
+          const localData=localStorage.getItem('pz_v3pz')
           if(localData){
             //有子菜单的情况
             const child=JSON.parse(localData).menu.routerList[0].children
@@ -25,6 +26,8 @@ const routes = [
             }else{
                 return JSON.parse(localData).menu.routerList[0].meta.path
             }
+          }else{
+            return '/login'
           }
         },
         children: [

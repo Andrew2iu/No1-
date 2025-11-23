@@ -26,12 +26,26 @@
     </van-form>
 </template>
 <script setup>
-import { reactive } from "vue";
-const onSubmit = () => {};
+import { reactive, getCurrentInstance } from "vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+// 获取当前vue实例
+const { proxy } = getCurrentInstance();
+
 const form = reactive({
     userName: "",
     passWord: "",
 });
+const onSubmit = async () => {
+    const { data } = await proxy.$api.login(form);
+    if (data.code === 10000) {
+        localStorage.setItem("h5_token", data.data.token);
+        localStorage.setItem("h5_userInfo", JSON.stringify(data.data.userInfo));
+        router.push("/home");
+    }
+};
+// 表单提交
 </script>
 <style lang="less" scoped>
 h1 {
