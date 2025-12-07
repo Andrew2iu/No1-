@@ -1,5 +1,6 @@
 import { createWebHashHistory, createRouter } from 'vue-router'
 
+// 直接导入组件
 import Layout from '../pages/Main.vue'
 import Home from '../pages/home/index.vue'
 import Order from '../pages/order/index.vue'
@@ -9,14 +10,14 @@ import createOrder from '../pages/createOrder/index.vue'
 import detail from '../pages/detail/index.vue'
 
 const routes = [
-  { 
+  {
     path: '/',
     component: Layout,
     redirect: '/home',
     children: [
       {
         path: 'home',
-        meta: { 
+        meta: {
           icon: 'home-o',
           name: '首页'
         },
@@ -24,7 +25,7 @@ const routes = [
       },
       {
         path: 'order',
-        meta: { 
+        meta: {
           icon: 'orders-o',
           name: '订单'
         },
@@ -42,18 +43,18 @@ const routes = [
   },
   {
     path: '/login',
-    name:"login",
+    name: "login",
     component: Login
-    
+
   },
   {
     path: '/createOrder',
-    name:"createOrder",
+    name: "createOrder",
     component: createOrder
   },
   {
     path: '/detail',
-    name:"detail",
+    name: "detail",
     component: detail
   },
 ]
